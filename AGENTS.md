@@ -62,6 +62,102 @@ Only create a module when it has an actual responsibility. Do not create empty m
 
 Use versions managed by the Spring Boot and Spring Modulith BOMs. Do not add dependencies without a concrete use case.
 
+## Engineering principles
+
+These principles are mandatory for all production and test code. When delivery pressure conflicts with them, fix the design before adding more behavior.
+
+### SOLID
+
+- **Single Responsibility:** A class must have one reason to change. Keep domain rules, use-case orchestration, persistence and HTTP concerns in separate classes.
+- **Open/Closed:** Extend behavior through new strategies, policies or adapters instead of editing stable core logic with type checks and flags.
+- **Liskov Substitution:** Every implementation of a port must honor the full contract, including nullability, exception behavior and side effects. Do not surprise callers.
+- **Interface Segregation:** Prefer small, role-specific ports. Do not create interfaces without a real boundary or test seam.
+- **Dependency Inversion:** High-level policy must not depend on low-level details. Domain and application code depend on abstractions they own; infrastructure implements them.
+
+### Dependency inversion and ports
+
+- Define ports in the domain or application layer and implement them in infrastructure.
+- Use constructor injection only. Do not use field injection, service locators or hidden dependencies.
+- Use cases depend on ports, not on JPA repositories, HTTP clients, messaging templates or Spring beans directly.
+- Do not instantiate infrastructure inside use cases with `new`.
+- Keep framework annotations out of domain classes. Transaction and security annotations belong at the application boundary.
+- Dependencies point inward: presentation → application → domain; infrastructure → application/domain. Never the reverse.
+
+### Composition over inheritance
+
+- Prefer delegation, strategy, decorator and composition.
+- Use inheritance only for a genuine is-a relationship with stable behavior; avoid deep hierarchies.
+- Do not use inheritance merely to reuse utility code.
+- Mark classes `final` unless they are explicitly designed for extension.
+
+### Encapsulation
+
+- Protect aggregate invariants inside the aggregate. Do not expose mutable fields or setters that allow invalid states.
+- Model behavior as methods on entities and value objects; avoid anemic domain models.
+- Return defensive copies or immutable views for collections.
+- Value objects validate their own invariants at construction.
+- Keep persistence concerns out of the domain model.
+
+### Immutability
+
+- Use records for DTOs, commands, queries, events and value objects where appropriate.
+- Prefer final fields and unmodifiable collections.
+- Return new instances instead of mutating shared state.
+- Domain events and public API DTOs must be immutable.
+- Avoid mutable static state and shared caches without explicit ownership.
+
+### Domain-Driven Design
+
+- Use the ubiquitous language of the business domain in class, method and event names.
+- Model bounded contexts explicitly; do not share domain entities across modules.
+- Use aggregates to protect transactional invariants; keep one transaction per aggregate.
+- Use entities for identity, value objects for concepts without identity, and domain events for meaningful state changes.
+- Use repositories as domain or application ports; do not expose query builders or persistence types.
+- Use domain services only for rules that do not naturally belong to one entity.
+- Do not create generic CRUD services as a substitute for domain behavior.
+- Cross-aggregate and cross-module consistency is eventual; do not force one transaction across them.
+
+### Hexagonal architecture
+
+- Keep the domain core independent of Spring, JPA, HTTP, messaging and external APIs.
+- Inbound adapters such as REST controllers and message listeners call application use cases.
+- Outbound adapters such as JPA repositories, external clients and event publishers implement ports.
+- Map transport DTOs to application commands or queries and domain types at the boundary.
+- Do not leak persistence entities or HTTP types into the core.
+- Domain and application tests must run without Spring or infrastructure.
+
+### Code smells
+
+Watch for and remove:
+
+- Long methods or classes, deep nesting, long parameter lists and flag arguments.
+- God objects, feature envy, inappropriate intimacy and shotgun surgery.
+- Divergent change, duplicated code and primitive obsession.
+- Anemic domain models, leaky abstractions and temporal coupling.
+- Speculative generality, dead code, commented-out code and magic numbers or strings.
+- Hidden dependencies, mutable static state and inconsistent error handling.
+
+When a smell is detected, refactor before adding more behavior to the affected area.
+
+### Refactoring
+
+- Refactor continuously in small, behavior-preserving steps.
+- Keep tests green; add characterization tests before refactoring untested behavior.
+- Prefer renames, extract method/class, move behavior, introduce value objects, replace conditionals with polymorphism or strategy, and remove duplication.
+- Do not perform large speculative rewrites.
+- Keep refactoring commits separate from behavior changes when practical.
+- Update documentation and ADRs when a refactor changes a public contract or architectural decision.
+
+### Separation of concerns
+
+- **Presentation:** HTTP handling, validation, DTO mapping, status codes and error translation.
+- **Application:** use-case orchestration, transaction boundaries, authorization checks and port calls.
+- **Domain:** business rules, invariants, state transitions and domain events.
+- **Infrastructure:** persistence, external integrations, messaging and technical configuration.
+- Do not put business logic in controllers, repositories, entity setters or configuration classes.
+- Keep side effects at the edges; do not mix I/O with pure domain decisions.
+- Cross-cutting concerns such as logging, metrics, transactions and security must be explicit and applied at the correct layer.
+
 ## Architecture rules
 
 ### Module boundaries
@@ -241,6 +337,24 @@ A change is done only when:
 - API or event documentation is updated.
 - No quality gate is bypassed.
 - License and copyright notices are preserved.
+
+## Code review checklist
+
+Check every change against these questions:
+
+- [ ] Does each class have a single, clear reason to change (SOLID/SRP)?
+- [ ] Is extension handled without modifying stable core logic with flags or type checks (SOLID/OCP)?
+- [ ] Do ports and implementations honor their contracts (SOLID/LSP)?
+- [ ] Are interfaces small and role-specific (SOLID/ISP)?
+- [ ] Do dependencies point inward, with infrastructure behind ports (Dependency Inversion)?
+- [ ] Is composition preferred over unnecessary inheritance?
+- [ ] Are aggregate invariants protected, and is the domain model free of anemic setters and public mutable state?
+- [ ] Are DTOs, commands, events and value objects immutable where possible?
+- [ ] Is the ubiquitous language used, and are bounded contexts and aggregates respected (DDD)?
+- [ ] Do inbound and outbound adapters stay outside the domain core (Hexagonal Architecture)?
+- [ ] Have obvious code smells been removed before adding more behavior?
+- [ ] Was the change refactored in small, behavior-preserving steps with tests?
+- [ ] Are presentation, application, domain and infrastructure concerns separated?
 
 ## Licensing
 
