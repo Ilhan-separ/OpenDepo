@@ -6,10 +6,12 @@ Guidance for AI coding agents and contributors working on OpenDepo.
 
 Before changing code, read:
 
-1. [`docs/architecture/project-architecture.md`](docs/architecture/project-architecture.md) — the authoritative product and architecture blueprint.
-2. [`README.md`](README.md) — quick start and project status.
+1. [`docs/architecture/blueprint.md`](docs/architecture/blueprint.md) — the concrete Phase 1 module, data, API and security plan.
+2. [`docs/architecture/project-architecture.md`](docs/architecture/project-architecture.md) — the authoritative product and architecture vision.
+3. [`docs/adr/README.md`](docs/adr/README.md) — accepted architecture decisions.
+4. [`README.md`](README.md) — quick start and project status.
 
-If a request conflicts with the architecture document, raise the conflict before implementing.
+If a request conflicts with the blueprint, the architecture document or an accepted ADR, raise the conflict before implementing.
 
 ## Project summary
 
@@ -27,6 +29,7 @@ backend/                            Spring Boot application
   src/main/resources/               Configuration and Flyway migrations
   src/test/java/com/opendepo/       Tests
 docs/architecture/                  Architecture documentation
+docs/adr/                           Architecture decision records
 docker-compose.yml                  Local development infrastructure
 ```
 
@@ -69,6 +72,7 @@ Use versions managed by the Spring Boot and Spring Modulith BOMs. Do not add dep
 - Never access another module's database tables or repositories directly.
 - Avoid circular module dependencies.
 - Use Spring Modulith and ArchUnit to enforce boundaries as modules are added.
+- Follow accepted ADRs. Record significant new decisions as a new ADR instead of silently changing the architecture.
 
 ### Layers inside a module
 

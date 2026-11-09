@@ -56,12 +56,15 @@ Local database settings can be overridden with the variables documented in [`.en
 ```text
 backend/              Spring Boot application
 docs/architecture/    Architecture documentation
+docs/adr/             Architecture decision records
 docker-compose.yml    Local infrastructure
 ```
 
 ## Documentation
 
+- [Phase 1 technical blueprint](docs/architecture/blueprint.md)
 - [Project architecture](docs/architecture/project-architecture.md)
+- [Architecture decision records](docs/adr/README.md)
 - [Agent and contributor guide](AGENTS.md)
 
 ## Project status
