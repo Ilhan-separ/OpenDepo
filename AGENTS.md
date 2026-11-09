@@ -274,6 +274,14 @@ cd backend
 cd backend
 ./mvnw test
 
+# Format Java sources
+cd backend
+./mvnw spotless:apply
+
+# Run the full quality gate (format check, tests, architecture checks)
+cd backend
+./mvnw verify
+
 # Package the application
 cd backend
 ./mvnw package
@@ -282,6 +290,8 @@ cd backend
 Testcontainers tests require a running Docker daemon. When Docker is unavailable, the initial context test is skipped; do not treat that as proof that integration behavior works.
 
 Use the Maven Wrapper (`./mvnw`) rather than a system Maven installation.
+
+Java sources are formatted with Spotless and Palantir Java Format. Run `./mvnw spotless:apply` before committing; `./mvnw verify` fails on unformatted code, test failures and architecture violations. CI runs the same verification on every pull request.
 
 ## Security
 

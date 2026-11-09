@@ -6,6 +6,7 @@
 [![Java](https://img.shields.io/badge/Java-25-orange.svg)](https://openjdk.org/projects/jdk/25/)
 [![Spring Boot](https://img.shields.io/badge/Spring_Boot-4.1-6DB33F.svg?logo=springboot&logoColor=white)](https://spring.io/projects/spring-boot)
 [![Status](https://img.shields.io/badge/status-early_development-blue.svg)](#project-status)
+[![CI](https://github.com/Ilhan-separ/OpenDepo/actions/workflows/ci.yml/badge.svg)](https://github.com/Ilhan-separ/OpenDepo/actions/workflows/ci.yml)
 
 OpenDepo helps organizations manage suppliers, product catalogs, purchase requisitions, approvals, inventory, warehouses and shipments from a single multi-tenant platform.
 
@@ -51,6 +52,16 @@ The local compose database listens on port **5433** to avoid conflicts with an e
 
 Local database settings can be overridden with the variables documented in [`.env.example`](.env.example). The backend reads `OPEN_DEPO_DB_URL`, `OPEN_DEPO_DB_USERNAME` and `OPEN_DEPO_DB_PASSWORD`.
 
+## Quality checks
+
+```bash
+cd backend
+./mvnw verify          # compile, tests, architecture checks and formatting check
+./mvnw spotless:apply  # format Java sources
+```
+
+The API documentation is available at <http://localhost:8080/swagger-ui.html> when the application is running.
+
 ## Project structure
 
 ```text
@@ -69,7 +80,7 @@ docker-compose.yml    Local infrastructure
 
 ## Project status
 
-The repository currently contains the project foundation: a Spring Boot modular monolith with PostgreSQL, Flyway and Spring Modulith. Business modules will be implemented incrementally according to the architecture roadmap.
+The repository currently contains the project foundation: a Spring Boot modular monolith with PostgreSQL, Flyway, Spring Modulith, OpenAPI, formatting, architecture tests and CI. Business modules will be implemented incrementally according to the architecture roadmap.
 
 ## License
 

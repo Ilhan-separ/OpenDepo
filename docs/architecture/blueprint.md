@@ -555,7 +555,7 @@ Detailed records are in [`docs/adr/`](../adr/).
 | Milestone | Outcome |
 | --- | --- |
 | M1 Foundation | Repository docs, Spring Boot skeleton, PostgreSQL/Flyway/Modulith, initial test (done) |
-| M2 Quality baseline | Spotless, ArchUnit, Modulith tests, OpenAPI baseline, GitHub Actions |
+| M2 Quality baseline | Spotless, ArchUnit, Modulith tests, OpenAPI baseline, GitHub Actions (done) |
 | M3 Security and tenancy | OIDC/Keycloak integration, tenant context, authorization, problem details |
 | M4 Organization | Organization and membership vertical slice with tests |
 | M5 Supplier | Supplier profile, contacts, addresses and status lifecycle |
@@ -569,16 +569,17 @@ Each milestone is delivered as small, independently testable changes. No milesto
 
 ### M2 — Quality baseline
 
-- Add Spotless and a formatting check.
-- Add ArchUnit and Spring Modulith test dependencies.
-- Add an architecture test that verifies module boundaries.
-- Add GitHub Actions CI with JDK 25 and Testcontainers.
-- Add OpenAPI dependency when the first controller is introduced.
+- [x] Add Spotless and a formatting check.
+- [x] Add ArchUnit and Spring Modulith test dependencies.
+- [x] Add an architecture test that verifies module boundaries.
+- [x] Add GitHub Actions CI with JDK 25 and Testcontainers.
+- [x] Add OpenAPI baseline and API documentation endpoints.
+- [x] Add Maven Enforcer with a JDK 25 requirement.
 
 Acceptance criteria:
 
-- A pull request fails on formatting, compilation, test or architecture violations.
-- The full build runs from a clean checkout with documented commands.
+- [x] A pull request fails on formatting, compilation, test or architecture violations.
+- [x] The full build runs from a clean checkout with documented commands.
 
 ### M3 — Security and tenancy
 
