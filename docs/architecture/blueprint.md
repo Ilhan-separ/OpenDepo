@@ -432,7 +432,7 @@ Use RFC 9457 Problem Details (`application/problem+json`):
   "detail": "One or more fields are invalid.",
   "instance": "/api/v1/suppliers",
   "code": "VALIDATION_ERROR",
-  "traceId": "4f9c2d7e",
+  "requestId": "4f9c2d7e",
   "errors": [
     { "field": "name", "message": "must not be blank" }
   ]
@@ -556,7 +556,7 @@ Detailed records are in [`docs/adr/`](../adr/).
 | --- | --- |
 | M1 Foundation | Repository docs, Spring Boot skeleton, PostgreSQL/Flyway/Modulith, initial test (done) |
 | M2 Quality baseline | Spotless, ArchUnit, Modulith tests, OpenAPI baseline, GitHub Actions (done) |
-| M3 Security and tenancy | OIDC/Keycloak integration, tenant context, authorization, problem details |
+| M3 Security and tenancy | OIDC/Keycloak integration, tenant context, authorization and problem details foundation (done; DB-backed membership validation follows in M4) |
 | M4 Organization | Organization and membership vertical slice with tests |
 | M5 Supplier | Supplier profile, contacts, addresses and status lifecycle |
 | M6 Catalog | Categories, products and pricing foundation |
@@ -583,16 +583,20 @@ Acceptance criteria:
 
 ### M3 — Security and tenancy
 
-- Add Spring Security OAuth2 resource server configuration.
-- Add Keycloak to the local development Compose stack.
-- Implement tenant context resolution and membership validation.
-- Implement the RFC 9457 error contract.
-- Add security integration tests.
+- [x] Add Spring Security OAuth2 resource server configuration.
+- [x] Add Keycloak to the local development Compose stack.
+- [x] Implement tenant context resolution from JWT claims.
+- [x] Implement realm-role mapping and method-security authorization.
+- [x] Implement the RFC 9457 error contract with request identifiers.
+- [x] Add security integration tests.
+- [ ] Add database-backed membership validation with the organization module (M4).
 
 Acceptance criteria:
 
-- Tenant-owned endpoints reject unauthenticated, unauthorized and cross-tenant requests.
-- No endpoint trusts a client-supplied organization identifier without validation.
+- [x] Tenant-owned endpoints reject unauthenticated and unauthorized requests.
+- [x] Requests with an invalid or missing tenant claim are rejected.
+- [ ] Cross-tenant membership is validated against persisted memberships (M4).
+- [x] No endpoint trusts a client-supplied organization identifier without validation.
 
 ### M4 — Organization
 

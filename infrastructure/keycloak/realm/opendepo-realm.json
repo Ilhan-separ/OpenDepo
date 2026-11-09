@@ -1,0 +1,119 @@
+{
+  "realm": "opendepo",
+  "enabled": true,
+  "displayName": "OpenDepo",
+  "sslRequired": "none",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": false,
+  "editUsernameAllowed": false,
+  "bruteForceProtected": true,
+  "accessTokenLifespan": 300,
+  "ssoSessionIdleTimeout": 1800,
+  "ssoSessionMaxLifespan": 36000,
+  "roles": {
+    "realm": [
+      {
+        "name": "OWNER",
+        "description": "Organization owner"
+      },
+      {
+        "name": "ADMIN",
+        "description": "Organization administrator"
+      },
+      {
+        "name": "PROCUREMENT_MANAGER",
+        "description": "Procurement manager"
+      },
+      {
+        "name": "BUYER",
+        "description": "Buyer"
+      },
+      {
+        "name": "APPROVER",
+        "description": "Approver"
+      },
+      {
+        "name": "VIEWER",
+        "description": "Read-only viewer"
+      }
+    ]
+  },
+  "users": [
+    {
+      "username": "admin",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "OpenDepo",
+      "lastName": "Admin",
+      "email": "admin@opendepo.local",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "admin",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "OWNER"
+      ],
+      "attributes": {
+        "org_id": [
+          "00000000-0000-0000-0000-000000000001"
+        ]
+      }
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "opendepo-web",
+      "name": "OpenDepo Web",
+      "description": "Local development client for obtaining user tokens",
+      "enabled": true,
+      "publicClient": true,
+      "directAccessGrantsEnabled": true,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "serviceAccountsEnabled": false,
+      "redirectUris": [
+        "http://localhost:3000/*"
+      ],
+      "webOrigins": [
+        "http://localhost:3000"
+      ],
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "roles",
+        "profile",
+        "basic",
+        "email"
+      ],
+      "optionalClientScopes": [
+        "address",
+        "phone",
+        "offline_access",
+        "microprofile-jwt"
+      ],
+      "protocolMappers": [
+        {
+          "name": "org_id",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.attribute": "org_id",
+            "claim.name": "org_id",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "introspection.token.claim": "true",
+            "multivalued": "false"
+          }
+        }
+      ]
+    }
+  ]
+}

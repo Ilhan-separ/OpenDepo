@@ -27,6 +27,7 @@ OpenDepo helps organizations manage suppliers, product catalogs, purchase requis
 
 - Java 25 and Spring Boot 4
 - Spring Modulith, Spring Data JPA and Flyway
+- Spring Security and Keycloak/OIDC
 - PostgreSQL
 - Maven
 - JUnit 5, AssertJ and Testcontainers
@@ -40,7 +41,7 @@ Requirements: JDK 25 and Docker.
 > `export JAVA_HOME=/opt/homebrew/opt/openjdk@25`
 
 ```bash
-# Start local PostgreSQL and wait until it is healthy
+# Start local PostgreSQL and Keycloak, then wait until they are healthy
 docker compose up -d --wait
 
 # Run the backend
@@ -51,6 +52,21 @@ cd backend
 The local compose database listens on port **5433** to avoid conflicts with an existing PostgreSQL installation. The health endpoint is available at <http://localhost:8080/actuator/health>.
 
 Local database settings can be overridden with the variables documented in [`.env.example`](.env.example). The backend reads `OPEN_DEPO_DB_URL`, `OPEN_DEPO_DB_USERNAME` and `OPEN_DEPO_DB_PASSWORD`.
+
+## Local authentication
+
+Keycloak is included in the local Compose stack and the development realm is imported automatically. The backend needs Keycloak to be reachable at startup because it loads OIDC metadata from the issuer. The admin console is available at <http://localhost:8180> with `admin` / `admin`. These credentials are for local development only.
+
+```bash
+TOKEN=$(curl -s -X POST http://localhost:8180/realms/opendepo/protocol/openid-connect/token \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  -d 'client_id=opendepo-web' \
+  -d 'username=admin' \
+  -d 'password=admin' \
+  -d 'grant_type=password' | jq -r .access_token)
+
+curl -H "Authorization: Bearer $TOKEN" http://localhost:8080/api/v1/me
+```
 
 ## Quality checks
 
@@ -68,6 +84,7 @@ The API documentation is available at <http://localhost:8080/swagger-ui.html> wh
 backend/              Spring Boot application
 docs/architecture/    Architecture documentation
 docs/adr/             Architecture decision records
+infrastructure/       Local Keycloak realm and future infrastructure
 docker-compose.yml    Local infrastructure
 ```
 
@@ -80,7 +97,7 @@ docker-compose.yml    Local infrastructure
 
 ## Project status
 
-The repository currently contains the project foundation: a Spring Boot modular monolith with PostgreSQL, Flyway, Spring Modulith, OpenAPI, formatting, architecture tests and CI. Business modules will be implemented incrementally according to the architecture roadmap.
+The repository currently contains the project foundation: a Spring Boot modular monolith with PostgreSQL, Flyway, Spring Modulith, Keycloak/OIDC security, OpenAPI, formatting, architecture tests and CI. Business modules will be implemented incrementally according to the architecture roadmap.
 
 ## License
 

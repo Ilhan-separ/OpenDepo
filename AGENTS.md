@@ -263,7 +263,7 @@ A feature is not complete until relevant tests exist and pass.
 Requirements: JDK 25 and Docker (for PostgreSQL and integration tests). Ensure `JAVA_HOME` points to JDK 25 before running Maven; the Maven Wrapper uses the JDK from `JAVA_HOME` or `PATH`.
 
 ```bash
-# Start local PostgreSQL and wait until it is healthy
+# Start local PostgreSQL and Keycloak, then wait until they are healthy
 docker compose up -d --wait
 
 # Run the application
@@ -289,6 +289,8 @@ cd backend
 
 Testcontainers tests require a running Docker daemon. When Docker is unavailable, the initial context test is skipped; do not treat that as proof that integration behavior works.
 
+Local Compose starts PostgreSQL and Keycloak. The development realm is imported from `infrastructure/keycloak/realm/`; its credentials are for local development only.
+
 Use the Maven Wrapper (`./mvnw`) rather than a system Maven installation.
 
 Java sources are formatted with Spotless and Palantir Java Format. Run `./mvnw spotless:apply` before committing; `./mvnw verify` fails on unformatted code, test failures and architecture violations. CI runs the same verification on every pull request.
@@ -301,6 +303,18 @@ Java sources are formatted with Spotless and Palantir Java Format. Run `./mvnw s
 - Validate and authorize every request at both organization and role level.
 - Use OAuth2/OpenID Connect and an identity provider when identity features are introduced; do not build an identity provider from scratch.
 - Keep audit records for critical business operations immutable and traceable.
+
+Current security foundation:
+
+- The backend is an OAuth2 resource server.
+- The local issuer is `http://localhost:8180/realms/opendepo`.
+- `/api/**` requires a valid JWT. Health, OpenAPI and Swagger endpoints are public for local development.
+- The user identifier comes from the `sub` claim.
+- The active tenant comes from the `org_id` claim.
+- Realm roles from `realm_access.roles` are mapped to `ROLE_*` authorities.
+- Never trust an organization identifier supplied in a path, header, query parameter or request body without authorization validation.
+- Error responses use RFC 9457 Problem Details and include a request identifier.
+- Database-backed membership validation is added with the organization module. Until it exists, do not add tenant-owned business endpoints that assume membership has been checked.
 
 ## Git workflow
 

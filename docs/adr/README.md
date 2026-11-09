@@ -10,6 +10,8 @@ Architecture Decision Records (ADRs) capture significant decisions and their con
 | [0004](0004-use-a-single-postgresql-schema-in-phase-1.md) | Use a single PostgreSQL schema in Phase 1 | Accepted |
 | [0005](0005-use-testcontainers-for-integration-tests.md) | Use Testcontainers for integration tests | Accepted |
 | [0006](0006-use-the-mit-license.md) | Use the MIT License | Accepted |
+| [0007](0007-use-keycloak-for-identity.md) | Use Keycloak for identity and access management | Accepted |
+| [0008](0008-use-rfc-9457-problem-details.md) | Use RFC 9457 Problem Details for API errors | Accepted |
 
 ## Conventions
 

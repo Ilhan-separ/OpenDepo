@@ -1,0 +1,39 @@
+/*
+ * SPDX-License-Identifier: MIT
+ */
+package com.opendepo.shared.infrastructure.web;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ProblemDetail;
+import org.springframework.stereotype.Component;
+import tools.jackson.databind.ObjectMapper;
+
+@Component
+public class ProblemDetailsWriter {
+
+    private final ObjectMapper objectMapper;
+    private final ProblemDetailsFactory problemDetailsFactory;
+
+    public ProblemDetailsWriter(ObjectMapper objectMapper, ProblemDetailsFactory problemDetailsFactory) {
+        this.objectMapper = objectMapper;
+        this.problemDetailsFactory = problemDetailsFactory;
+    }
+
+    public void write(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            HttpStatus status,
+            String title,
+            String code,
+            String detail)
+            throws IOException {
+        ProblemDetail problem = problemDetailsFactory.create(request, status, title, code, detail);
+        response.setStatus(status.value());
+        response.setContentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE);
+        objectMapper.writeValue(response.getOutputStream(), problem);
+    }
+}

@@ -9,7 +9,7 @@ public class TestOpenDepoApplication {
 
     public static void main(String[] args) {
         SpringApplication.from(OpenDepoApplication::main)
-                .with(TestcontainersConfiguration.class)
+                .with(TestcontainersConfiguration.class, TestJwtConfiguration.class)
                 .run(args);
     }
 }
